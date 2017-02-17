@@ -26,6 +26,7 @@ matrix:
     - MATPLOTLIB=1.4
     - NUMPY=1.9
     - SCIPY=0.15
+    - OPTIONAL="libgfortran=1"
     - USE_NUMBA=false
     - PANDAS=0.16
     - COVERAGE=true
@@ -72,10 +73,7 @@ before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   # Avoid noise from matplotlib
-  - mkdir $HOME/.config
-  - mkdir $HOME/.config/matplotlib
-  # Location for older version of matplotlib
-  - if [ ${MATPLOTLIB} = "1.2" ]; then mkdir $HOME/.matplotlib; fi
+  - mkdir -p $HOME/.config/matplotlib
   # Build package list to avoid empty package=versions; only needed for versioned pacakges
   - PKGS="python=${PYTHON}"
   - PKGS="${PKGS} numpy"; if [ ${NUMPY} ]; then PKGS="${PKGS}=${NUMPY}"; fi;
@@ -83,11 +81,9 @@ before_install:
   - PKGS="${PKGS} patsy"; if [ ${PATSY} ]; then PKGS="${PKGS}=${PATSY}"; fi;
   - PKGS="${PKGS} pandas"; if [ ${PANDAS} ]; then PKGS="${PKGS}=${PANDAS}"; fi;
   - PKGS="${PKGS} Cython"; if [ ${CYTHON} ]; then PKGS="${PKGS}=${CYTHON}"; fi;
-  - if [[ ${PYTHON} < "3.6" ]]; then PKGS="${PKGS} matplotlib"; if [ ${MATPLOTLIB} ]; then PKGS="${PKGS}=${MATPLOTLIB}"; fi; fi
+  - PKGS="${PKGS} matplotlib"; if [ ${MATPLOTLIB} ]; then PKGS="${PKGS}=${MATPLOTLIB}"; fi;
   - PKGS="${PKGS} statsmodels"; if [ ${STATSMODELS} ]; then PKGS="${PKGS}=${STATSMODELS}"; fi;
   - if [ ${USE_NUMBA} = true ]; then PKGS="${PKGS} numba"; if [ ${NUMBA} ]; then PKGS="${PKGS}=${NUMBA}";  fi; fi;
-  # Fix for missing libgfortran
-  - if [ ${SCIPY} = "0.15" ]; then PKGS="${PKGS} libgfortran=1"; fi
 
 # Install packages
 install:
